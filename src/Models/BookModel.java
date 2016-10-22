@@ -38,16 +38,29 @@ public class BookModel implements DataInterface {
         }
     }
     
-    public static Boolean getBookData(Number start, String search, String typeSearch) {
+    public static ResultSet getDataBooks(Number start, String search, String typeSearch) {
         
         
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT * FROM datalibrary.book WHERE " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",20");
+            ps = SQLService.getConnect().prepareStatement("SELECT idBook, Name, Author, Type, Value, Numbers FROM datalibrary.book WHERE " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",20");
             rs = ps.executeQuery();
-            return true;
+            return rs;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Không lấy được dữ liệu \n Vui lòng thử lại sau 5 phút", "Lỗi", 2);
-            return false;
+            return null;
+        }
+    }
+    
+    public static ResultSet getDataBook(Number idBook) {
+
+        try {
+            ps = SQLService.getConnect().prepareStatement("SELECT * FROM datalibrary.book WHERE idBook = ?");
+            ps.setInt(1, (int)idBook);
+            rs = ps.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Không lấy được dữ liệu \n Vui lòng thử lại sau 5 phút", "Lỗi", 2);
+            return null;
         }
     }
     

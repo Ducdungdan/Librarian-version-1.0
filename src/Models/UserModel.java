@@ -8,9 +8,6 @@ package Models;
 import static Controllers.MainController.HMAC_SHA256;
 import Object.User;
 import java.awt.HeadlessException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,8 +41,7 @@ public class UserModel implements DataInterface {
 
     public static Boolean login(String email, String password){
         String auth = HMAC_SHA256(email, password);
-        System.out.println(email + " " + password);
-        System.out.println(email + "  " + auth);
+        
         try {
             ps = SQLService.getConnect().prepareStatement("SELECT * FROM datalibrary.authentication, datalibrary.user WHERE Email = ? and Authentication = ? and authentication.idUser = user.idUser");
             ps.setString(1, email);

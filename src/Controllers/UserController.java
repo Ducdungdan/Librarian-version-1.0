@@ -14,8 +14,6 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,12 +21,10 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -54,7 +50,6 @@ public class UserController {
             JOptionPane.showMessageDialog(null, "Bạn chưa nhập Email hoặc password", "Thông báo", 1);
         } else {
             if (UserModel.login(email, password)) {
-                System.out.println(email + password);
                 frame.dispose();
                 new Main().setVisible(true);
             }

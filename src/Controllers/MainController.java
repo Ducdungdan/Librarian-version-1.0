@@ -7,11 +7,7 @@ package Controllers;
 
 import Object.User;
 import Views.*;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -21,7 +17,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.apache.commons.codec.binary.Base64;
@@ -31,6 +26,7 @@ import org.apache.commons.codec.binary.Base64;
  * @author Duc Dung Dan
  */
 public class MainController {
+    private final static String NON_THIN = "[^iIl1\\.,']";
     
     public static void startApplication() {
         // View the application's GUI
@@ -56,7 +52,15 @@ public class MainController {
         jpanel.setLayout(girdlayout);
         jpanel.add(infor.getPanelInformation());
         jpanel.updateUI();
-                
+    }
+    
+    public static void listBook(JPanel jpanel) {
+        ListBook listBook = new ListBook();
+        jpanel.removeAll();
+        GridLayout girdlayout = new GridLayout();
+        jpanel.setLayout(girdlayout);
+        jpanel.add(listBook.getPanelListBook());
+        jpanel.updateUI();
     }
     
     public static String addDays(Date d, int days) throws ParseException {
@@ -85,15 +89,35 @@ public class MainController {
             return "";
         }
     }
-    
-    public static Image getScaledImage(Image srcImg, int w, int h) {
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = resizedImg.createGraphics();
-
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, 0, 0, w, h, null);
-        g2.dispose();
-
-        return resizedImg;
+    private static int textWidth(String str) {
+        return (int) (str.length() - str.replaceAll(NON_THIN, "").length() / 2);
     }
+    
+    public static String truncate(String text, int max) {
+        if (textWidth(text) <= max) {
+            return text;
+        }
+        
+        int end = text.lastIndexOf(' ', max - 3);
+        
+        if (end == -1) {
+            return text.substring(0, max - 3) + "...";
+        }
+        
+        int newEnd = end;
+        do {
+            end = newEnd;
+            newEnd = text.indexOf(' ', end + 1);
+
+            // No more spaces.
+            if (newEnd == -1) {
+                newEnd = text.length();
+            }
+
+        } while (textWidth(text.substring(0, newEnd) + "...") < max);
+
+        return text.substring(0, end) + "...";
+    }
+
+    
 }

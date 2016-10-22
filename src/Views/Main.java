@@ -239,10 +239,6 @@ public class Main extends javax.swing.JFrame {
         Controllers.MainController.logOut(this);
     }//GEN-LAST:event_exitActionPerformed
 
-    private void bookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookMouseClicked
-
-    }//GEN-LAST:event_bookMouseClicked
-
     private void homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeActionPerformed
 
     }//GEN-LAST:event_homeActionPerformed
@@ -254,6 +250,10 @@ public class Main extends javax.swing.JFrame {
     private void aaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_aaAncestorAdded
         Controllers.UserController.showNavItem(lastName, icon);
     }//GEN-LAST:event_aaAncestorAdded
+
+    private void bookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookMouseClicked
+        Controllers.MainController.listBook(main);
+    }//GEN-LAST:event_bookMouseClicked
 
     /**
      * @param args the command line arguments

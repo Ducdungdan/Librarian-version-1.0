@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Controllers;
+import static Controllers.MainController.truncate;
 import Models.RentBookModel;
 import java.sql.Blob;
 import java.sql.ResultSet;
@@ -57,12 +58,12 @@ public class RentBookController {
         if(RentBookModel.getRentBook(idBook, idRent)) {
             ResultSet rs = RentBookModel.rs;
             if(rs.next()) {
-                nameBook.setText(rs.getString("Name"));
-                authorBook.setText("Tác giả: " + rs.getString("Author"));
-                companyBook.setText(rs.getString("Publishing_company"));
-                yearBook.setText("Năm XB: " + rs.getString("Publishing_year"));
-                typeBook.setText("Thể loại: " + rs.getString("Type"));
-                countryBook.setText("Quốc gia: " + rs.getString("Country"));
+                nameBook.setText(truncate(rs.getString("Name"),60));
+                authorBook.setText(truncate("Tác giả: " + rs.getString("Author"), 30));
+                companyBook.setText(truncate(rs.getString("Publishing_company"), 30));
+                yearBook.setText(truncate("Năm XB: " + rs.getString("Publishing_year"), 30));
+                typeBook.setText(truncate("Thể loại: " + rs.getString("Type"), 30));
+                countryBook.setText(truncate("Quốc gia: " + rs.getString("Country"), 30));
                 rental.setText("Giá: " + rs.getString("rental"));
 
                 if (rs.getBlob("Image") != null) {
