@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  *
  * @author Duc Dung Dan
  */
-public class RentBookData implements DataInterface{
+public class RentBookModel implements DataInterface{
     public static PreparedStatement ps;
     public static ResultSet rs;
     
@@ -37,17 +37,29 @@ public class RentBookData implements DataInterface{
     }
     
     
-    public static Boolean getRentBookData(Number start, String search, String typeSearch) throws ParseException, SQLException {
+    public static Boolean getRentBook() {
         try {
-            if ("Day_return".equals(typeSearch) && !"".equals(search)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                search = addDays(format.parse(search), -160);
-                typeSearch = "Day_borrow";
-            }
-            ps = SQLService.getConnect().prepareStatement("SELECT rentbook.idUser, rentbook.idBook, Day_borrow, Day_return, rentbook.Value, Name, Author FROM rentbook, book WHERE " + (UserData.user.getAdmin()?" ":"(rentbook.idUser =" + UserData.user.getIdUser().toString() + ") AND ") + "(" + typeSearch + " LIKE \"%" + search + "%\") AND (Day_return = \"1970-01-01\") AND (book.idBook = rentbook.idBook) LIMIT " + start + ",18");
+            ps = SQLService.getConnect().prepareStatement("SELECT idRent, book.idBook, Name, day_borrow, day_return FROM datalibrary.rent_book, datalibrary.book WHERE rent_book.idBook = book.idBook AND idUser = ?");
+            ps.setInt(1, (int) UserModel.user.getIdUser());
             rs = ps.executeQuery();
             return true;
-        } catch (ParseException | SQLException e) {
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
+            return false;
+        }
+    }
+    
+    public static Boolean getRentBook(Number idBook, Number idRent) {
+        try {
+            ps = SQLService.getConnect().prepareStatement("SELECT * FROM datalibrary.rent_book, datalibrary.book WHERE rent_book.idBook = book.idBook AND idUser = ? AND book.idBook = ? AND idRent = ?");
+            ps.setInt(1, (int) UserModel.user.getIdUser());
+            ps.setInt(2, (int) idBook);
+            ps.setInt(3, (int) idRent);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            return true;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
             return false;
         }
     }

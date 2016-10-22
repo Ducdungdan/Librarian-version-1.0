@@ -204,23 +204,18 @@ public class UserModel implements DataInterface {
         }
     }
     
-    public static Boolean updateImageUser(File file) throws SQLException, FileNotFoundException {
+    public static Boolean updateImageUser(byte[] newImage) throws SQLException {
         ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.user SET Image = ? WHERE idUser = ?");
-        FileInputStream fis = new FileInputStream(file);
-        ps.setBinaryStream(1,fis,(int)file.length());
+        if (newImage == null) {
+            ps.setBytes(1, null);
+        } else {
+            Blob blob = new javax.sql.rowset.serial.SerialBlob(newImage);
+            ps.setBytes(1, newImage);
+        }
         ps.setInt(2, (int) user.getIdUser());
         if (!ps.execute()) {
             JOptionPane.showMessageDialog(null, "Thay đổi avartar thành công", "Thông báo", 2);
-            ps = SQLService.getConnect().prepareStatement("SELECT Image FROM datalibrary.user WHERE idUser = ?");
-            ps.setInt(1, (int) user.getIdUser());
-            rs = ps.executeQuery();
-            rs.next();
-            Blob blob = rs.getBlob("Image");
-            if(blob != null) {
-                user.setImage(blob.getBytes(1, (int) blob.length()));
-            } else {
-                user.setImage(null);
-            }
+            user.setImage(newImage);
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "Hiện tại không thể cập nhật avartar", "Lỗi", 2);

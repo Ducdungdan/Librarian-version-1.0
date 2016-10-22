@@ -32,8 +32,8 @@ public class Main extends javax.swing.JFrame {
         inputSearchNameUser = new javax.swing.JTextField();
         searchUser = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        icon = new javax.swing.JLabel();
+        lastName = new javax.swing.JLabel();
         coupon = new javax.swing.JButton();
         home = new javax.swing.JButton();
         book = new javax.swing.JButton();
@@ -45,6 +45,15 @@ public class Main extends javax.swing.JFrame {
         setUndecorated(true);
 
         aa.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(0, 51, 255), null));
+        aa.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                aaAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(59, 89, 152));
 
@@ -68,15 +77,18 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        lastName.setFont(new java.awt.Font("Times New Roman", 1, 13)); // NOI18N
+        lastName.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(icon, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                .addComponent(lastName, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         jPanel3Layout.setVerticalGroup(
@@ -84,8 +96,8 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lastName, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(icon, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -239,6 +251,10 @@ public class Main extends javax.swing.JFrame {
         Controllers.MainController.information(main);
     }//GEN-LAST:event_jPanel3MouseClicked
 
+    private void aaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_aaAncestorAdded
+        Controllers.UserController.showNavItem(lastName, icon);
+    }//GEN-LAST:event_aaAncestorAdded
+
     /**
      * @param args the command line arguments
      */
@@ -273,18 +289,18 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JPanel aa;
-    private javax.swing.JButton book;
-    private javax.swing.JButton coupon;
-    private javax.swing.JButton exit;
-    private javax.swing.JButton home;
-    private javax.swing.JTextField inputSearchNameUser;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel logo;
+    public static javax.swing.JButton book;
+    public static javax.swing.JButton coupon;
+    public static javax.swing.JButton exit;
+    public static javax.swing.JButton home;
+    public static javax.swing.JLabel icon;
+    public static javax.swing.JTextField inputSearchNameUser;
+    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel jPanel3;
+    public static javax.swing.JLabel lastName;
+    public static javax.swing.JLabel logo;
     public static javax.swing.JPanel main;
-    private javax.swing.JButton searchUser;
-    private javax.swing.JButton statistical;
+    public static javax.swing.JButton searchUser;
+    public static javax.swing.JButton statistical;
     // End of variables declaration//GEN-END:variables
 }
