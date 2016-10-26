@@ -14,6 +14,6 @@ import Controllers.MainController;
 public class MainCollesction {
     
     public static void main(String[] args) {
-        MainController.startApplication();
+        new MainController().startApplication();
     }
 }

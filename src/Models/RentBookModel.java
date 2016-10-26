@@ -5,16 +5,14 @@
  */
 package Models;
 
-import static Controllers.MainController.addDays;
-import java.util.Date;
-import java.awt.HeadlessException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import Object.*;
 
 /**
  *
@@ -23,6 +21,37 @@ import javax.swing.JOptionPane;
 public class RentBookModel implements DataInterface{
     public static PreparedStatement ps;
     public static ResultSet rs;
+    public static final ArrayList<RentBook> rentBook = new ArrayList<>();
+
+    public static boolean setRentBook() {
+        try {
+            ps = SQLService.getConnect().prepareStatement("call datalibrary.insert_rent(?)");
+            ps.setInt(1, (int) UserModel.user.getIdUser());
+            rs = ps.executeQuery();
+            RentBook rentb;
+            if(rs.next()) {
+                for(int i = 0; i < rentBook.size(); ++i) {
+                    try {
+                        rentb = rentBook.get(i);
+                        ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.infor_rent (idRent, idBook, day_borrow, rental) VALUES (?, ?, NOW(), ?)");
+                        ps.setInt(1, rs.getInt("LAST_INSERT_ID()"));
+                        ps.setInt(2, (int) rentb.getIdBook());
+                        ps.setInt(3, (int) rentb.getRental());
+                        ps.execute();
+                        
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                rentBook.clear();
+                return true;
+                        
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
     
     @Override
     public ResultSet getStatisticalData(String statisticalName) {
@@ -37,9 +66,9 @@ public class RentBookModel implements DataInterface{
     }
     
     
-    public static Boolean getRentBook() {
+    public static Boolean getRentBooks() {
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT idRent, book.idBook, Name, day_borrow, day_return FROM datalibrary.rent_book, datalibrary.book WHERE rent_book.idBook = book.idBook AND idUser = ?");
+            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, book.idBook, Name, day_borrow, day_return FROM datalibrary.rent, datalibrary.book, datalibrary.infor_rent WHERE infor_rent.idBook = book.idBook AND rent.idRent = infor_rent.idRent AND idUser = ?");
             ps.setInt(1, (int) UserModel.user.getIdUser());
             rs = ps.executeQuery();
             return true;
@@ -51,11 +80,9 @@ public class RentBookModel implements DataInterface{
     
     public static Boolean getRentBook(Number idBook, Number idRent) {
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT * FROM datalibrary.rent_book, datalibrary.book WHERE rent_book.idBook = book.idBook AND idUser = ? AND book.idBook = ? AND idRent = ?");
-            ps.setInt(1, (int) UserModel.user.getIdUser());
-            ps.setInt(2, (int) idBook);
-            ps.setInt(3, (int) idRent);
-            System.out.println(ps);
+            ps = SQLService.getConnect().prepareStatement("SELECT Image, Name, Author, Publishing_company, Publishing_year, Type, Country, rental  FROM datalibrary.infor_rent, datalibrary.book WHERE infor_rent.idBook = book.idBook AND book.idBook = ? AND idRent = ?");
+            ps.setInt(1, (int) idBook);
+            ps.setInt(2, (int) idRent);
             rs = ps.executeQuery();
             return true;
         } catch (Exception e) {
@@ -63,146 +90,4 @@ public class RentBookModel implements DataInterface{
             return false;
         }
     }
-    
-    public static Boolean setRentBookData(Number idUser, Number idBook, Number Fine) {
-        try {
-            ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.rentbook (idUser, idBook, Day_borrow, Day_return, Value) VALUES (?, ?, ?, ?, ?)");
-            ps.setInt(1, (int) idUser);
-            ps.setInt(2, (int) idBook);
-            Date date = new Date();
-            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-            ps.setString(3, ft.format(date));
-            ps.setString(4, "1970-01-01");
-            ps.setInt(5, (int) Fine);
-            if(!ps.execute()) {
-                return true;
-            } else {
-                JOptionPane.showMessageDialog(null, "Bạn đang mượn đầu sách này", "Lỗi", 2);
-                return false;
-            }
-        } catch (SQLException | HeadlessException e) {
-            if("Numbers = 0".equals(e.getMessage())) {
-                JOptionPane.showMessageDialog(null, "Không mượn được đầu sách này \n Số lượng đã hết", "Thông báo", 2);
-            } else {
-                if("Duplicate entry \'1-2\' for key \'PRIMARY\'".equals(e.getMessage())){
-                    JOptionPane.showMessageDialog(null, "Bạn đã mượn đầu sách này rồi", "Thông báo", 2);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Bạn đang mượn đầu sách này", "Lỗi", 2);
-                }   
-            }
-            return false;
-        }
-    }
-    
-    public static Boolean getRentedBookData(Number start, String search, String typeSearch) {
-
-        try {
-            ps = SQLService.getConnect().prepareStatement("SELECT rentbook.idUser, rentbook.idBook, Day_borrow, Day_return, rentbook.Value, Name, Author FROM rentbook, book WHERE " + (UserData.user.getAdmin()?"":"(rentbook.idUser =" + UserData.user.getIdUser().toString() + ") AND ") + "(" + typeSearch + " LIKE \"%" + search + "%\") AND (Day_return != \"1970-01-01\") AND (book.idBook = rentbook.idBook) LIMIT " + start + ",18");
-            rs = ps.executeQuery();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    
-    public static Boolean returnBook(Number idBook, Number idUser) {
-        try {
-            ps = SQLService.getConnect().prepareStatement("SELECT Day_return FROM datalibrary.rentbook WHERE idUser=? AND idBook=?");
-            ps.setString(1, idUser.toString());
-            ps.setString(2, idBook.toString());
-            rs = ps.executeQuery();
-            if (rs.next() && UserData.user.getAdmin()) {
-                if(!"1970-01-01".equals(rs.getString("Day_return"))) {
-                    JOptionPane.showMessageDialog(null, "idUser = " + idUser + " đã trả sách có idBook = " + idBook + " ngày " + rs.getString("Day_return"), "Lỗi", 2);
-                    return false;
-                } else {
-                    Date date = new Date();
-                    SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
-                    ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.rentbook SET Day_return=? WHERE idUser=? and`idBook`=?");
-                    ps.setString(1, ft.format(date));
-                    ps.setString(2, idUser.toString());
-                    ps.setString(3, idBook.toString());
-                    
-                    if(!ps.execute()) {
-                        return true;
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Trả sách không thành công", "Lỗi", 2);
-                        return false;   
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "idUser = " + idUser + " không mượn sách có idBook = " + idBook, "Lỗi", 2);
-                return false;
-            }
-        } catch (SQLException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, "Trả sách không thành công", "Lỗi", 2);
-            return false;
-        }
-        
-    }
-    
-    public static Boolean getOutOfDate(Number start, String search, String typeSearch) {
-        Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            if ("Day_return".equals(typeSearch) && !"".equals(search)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                search = addDays(format.parse(search), -160);
-                typeSearch = "Day_borrow";
-            }
-            ps = SQLService.getConnect().prepareStatement("SELECT rentbook.idUser, rentbook.idBook, Day_borrow, Day_return, rentbook.Value, Name, Author FROM rentbook, book WHERE " + (UserData.user.getAdmin() ? "" : "(rentbook.idUser =" + UserData.user.getIdUser().toString() + ") AND ") + "(" + typeSearch + " LIKE \"%" + search + "%\") AND (Day_return = \"1970-01-01\") AND (book.idBook = rentbook.idBook) AND (Day_borrow + 15 > " + ft.format(date) + ") LIMIT " + start + ",18");
-            System.out.println(ps);
-            rs = ps.executeQuery();
-            return true;
-        } catch (ParseException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Không lấy được dữ liệu \n Vui lòng thử lại sau 5 phút", "Lỗi", 2);
-            return false;
-        }
-    }
-    
-//    public static Boolean fineBook(Number idBook, Number idUser, Number fine) {
-//        try {
-//            ps = SQLService.getConnect().prepareStatement("SELECT Day_return FROM datalibrary.rentbook WHERE idUser=? AND idBook=?");
-//            ps.setString(1, idUser.toString());
-//            ps.setString(2, idBook.toString());
-//            rs = ps.executeQuery();
-//            if (rs.next() && UserData.user.getAdmin()) {
-//                if (!"1970-01-01".equals(rs.getString("Day_return"))) {
-//                    JOptionPane.showMessageDialog(null, "idUser = " + idUser + " đã trả sách có idBook = " + idBook + " ngày " + rs.getString("Day_return"), "Lỗi", 2);
-//                    return false;
-//                } else {
-//                    Date date = new Date();
-//                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-//                    ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.outofdate (idUser, idBook, Day_return, Fine) VALUES (?, ?, ?, ?)");
-//                    ps.setInt(1, (int) idUser);
-//                    ps.setInt(2, (int) idBook);
-//                    ps.setString(3, ft.format(date));
-//                    ps.setInt(4, (int) fine);
-//
-//                    if (!ps.execute()) {
-//                        ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.rentbook SET Day_return=? WHERE idUser=? and idBook=?");
-//                        ps.setString(1, ft.format(date));
-//                        ps.setInt(2, (int) idUser);
-//                        ps.setInt(3, (int) idBook);
-//                        if (!ps.execute()) {
-//                            return true;
-//                        } else {
-//                            JOptionPane.showMessageDialog(null, "Nộp phạt không thành công", "Lỗi", 2);
-//                            return false;
-//                        }
-//                    } else {
-//                        JOptionPane.showMessageDialog(null, "Nộp phạt không thành công", "Lỗi", 2);
-//                        return false;
-//                    }
-//                }
-//            } else {
-//                JOptionPane.showMessageDialog(null, "idUser = " + idUser + " không mượn sách có idBook = " + idBook, "Lỗi", 2);
-//                return false;
-//            }
-//        } catch (SQLException | HeadlessException e) {
-//            JOptionPane.showMessageDialog(null, "Nộp phạt không thành công", "Lỗi", 2);
-//            return false;
-//        }
-//
-//    }
 }

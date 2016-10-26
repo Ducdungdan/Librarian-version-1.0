@@ -6,6 +6,7 @@
 package Controllers;
 import static Controllers.MainController.truncate;
 import Models.RentBookModel;
+import Object.RentBook;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 public class RentBookController {
     
     public static void tableRentBook(JTable jtable) throws SQLException, ParseException {
-        if(RentBookModel.getRentBook()) {
+        if(RentBookModel.getRentBooks()) {
             ResultSet rs = Models.RentBookModel.rs;
             DefaultTableModel model = (DefaultTableModel) jtable.getModel();
             int rowCount = model.getRowCount();
@@ -49,7 +51,7 @@ public class RentBookController {
                         status = "Còn " + MainController.subDays(dayReturn, dateNow) + " ngày";
                     }
                 }
-                model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("book.idBook"), rs.getString("Name"), rs.getString("day_borrow"), rs.getString("day_return"), status});
+                model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("idBook"), rs.getString("Name"), rs.getString("day_borrow"), rs.getString("day_return"), status});
             }
         }
     }
@@ -71,7 +73,7 @@ public class RentBookController {
                     ImageIcon icon = new ImageIcon(blob.getBytes(1, (int) blob.length()));
                     imageBook.setIcon(icon);
                 } else {
-                    String imagePath = "src/Image/avartar.png";
+                    String imagePath = "src/Image/book-null.png";
                     ImageIcon icon = new ImageIcon(imagePath);
                     imageBook.setIcon(icon);
                 }
@@ -79,6 +81,39 @@ public class RentBookController {
         }
     }
     
+    public static void rentBook(Number idBook, JTable tableListBook, Number selectRow) {
+        DefaultTableModel model = (DefaultTableModel) tableListBook.getModel();
+        int rental = (int) tableListBook.getValueAt((int) selectRow, 5);
+        RentBook newRentBook = new RentBook();
+        
+        newRentBook.setIdBook(idBook);
+        newRentBook.setRental((Number) model.getValueAt((int) selectRow, 5));
+        if(checkOrdered(idBook)) {
+            RentBookModel.rentBook.add(newRentBook);
+            JOptionPane.showMessageDialog(null, "Thêm thành công đầu sách có idBook = " + idBook + " \nBạn vui lòng vào giỏ hàng để thanh toán", "Thông báo", 2);
+        } else {
+            JOptionPane.showMessageDialog(null, "Đầu sách có idBook = " + idBook + " đã có trong giỏ hàng", "Thông báo", 2);
+        }
+    }
     
+    public static Boolean checkOrdered(Number idBook) {
+        int orderedLeng = RentBookModel.rentBook.size();
+        for(int i = 0; i < orderedLeng; ++i) {
+            if(RentBookModel.rentBook.get(i).getIdBook() == idBook) {
+                return false;
+            }
+        }
+        return true;
+    }
     
+    public static void rentBook() {
+        String question = "Bạn muốn thanh toán hóa đơn trong giỏ hàng!";
+        if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
+            if (RentBookModel.setRentBook()) {
+                JOptionPane.showMessageDialog(null, "Thuê sách thành công \n Vào trang cá nhân để kiểm tra", "Thông báo", 2);
+            } else {
+                JOptionPane.showMessageDialog(null, "Thuê sách thất bại \n Vui lòng thử lại", "Thông báo", 2);
+            }
+        }
+    }
 }

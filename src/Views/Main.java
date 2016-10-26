@@ -106,6 +106,11 @@ public class Main extends javax.swing.JFrame {
         coupon.setBorderPainted(false);
         coupon.setContentAreaFilled(false);
         coupon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        coupon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                couponMouseClicked(evt);
+            }
+        });
 
         home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/home.png"))); // NOI18N
         home.setBorder(null);
@@ -254,6 +259,10 @@ public class Main extends javax.swing.JFrame {
     private void bookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookMouseClicked
         Controllers.MainController.listBook(main);
     }//GEN-LAST:event_bookMouseClicked
+
+    private void couponMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_couponMouseClicked
+        Controllers.MainController.order(main);
+    }//GEN-LAST:event_couponMouseClicked
 
     /**
      * @param args the command line arguments

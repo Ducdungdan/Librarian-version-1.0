@@ -5,9 +5,16 @@
  */
 package Controllers;
 
+import Models.UserModel;
 import Object.User;
 import Views.*;
+import static Views.ListBook.pageBook;
+import static Views.ListBook.tableListBook;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -17,7 +24,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.apache.commons.codec.binary.Base64;
 
@@ -28,7 +37,7 @@ import org.apache.commons.codec.binary.Base64;
 public class MainController {
     private final static String NON_THIN = "[^iIl1\\.,']";
     
-    public static void startApplication() {
+    public void startApplication() {
         // View the application's GUI
         Login login = new Login();
         login.setVisible(true);
@@ -42,7 +51,7 @@ public class MainController {
     public static void logOut(JFrame jframe) {
         Models.UserModel.user = new User();
         jframe.dispose();
-        startApplication();
+        new MainController().startApplication();
     }
     
     public static void information(JPanel jpanel) {
@@ -59,7 +68,27 @@ public class MainController {
         jpanel.removeAll();
         GridLayout girdlayout = new GridLayout();
         jpanel.setLayout(girdlayout);
+        if(!UserModel.user.getAdmin()) {
+            listBook.delete.setVisible(false);
+            listBook.addBook.setVisible(false);
+            listBook.edit.setVisible(false);
+        }
         jpanel.add(listBook.getPanelListBook());
+        jpanel.updateUI();
+        BookController.pageBook = 0;
+        BookController.start = 0;
+        BookController.search = "";
+        BookController.typeSearch = "idBook";
+        BookController.loadTableListBooks(tableListBook);
+        pageBook.setText("0");
+    }
+    
+    public static void order(JPanel jpanel) {
+        Order order = new Order();
+        jpanel.removeAll();
+        GridLayout girdlayout = new GridLayout();
+        jpanel.setLayout(girdlayout);
+        jpanel.add(order.getPanelOrder());
         jpanel.updateUI();
     }
     
@@ -117,6 +146,36 @@ public class MainController {
         } while (textWidth(text.substring(0, newEnd) + "...") < max);
 
         return text.substring(0, end) + "...";
+    }
+    
+    public static Image readImageFromURL(String path, Number height, Number weight) {
+        try {
+            URL url = new URL(path);
+            Image image = ImageIO.read(url).getScaledInstance((int)weight, (int)height, java.awt.Image.SCALE_SMOOTH );
+            return image;
+        } catch (Exception e) {
+            if("Can't get input stream from URL!".equals(e.getMessage())) {
+                JOptionPane.showMessageDialog(null, "Không lấy được hình ảnh có url: " + path, "Thông báo", 2);
+            }
+            return null;
+        }
+    }
+    
+    public static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage) {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
     }
 
     

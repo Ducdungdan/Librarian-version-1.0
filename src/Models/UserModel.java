@@ -130,11 +130,7 @@ public class UserModel implements DataInterface {
         ps.setString(4, newUser.getAdress());
         ps.setString(5, newUser.getCity());
         ps.setInt(6, (int) user.getIdUser());
-        if (!ps.execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return !ps.execute();
     }
         
     public static Boolean getUserData(Number start, String search, String typeSearch) {

@@ -86,6 +86,11 @@ public class UserController {
     
     public static void viewUser(JTextField name, JTextField adress, JLabel avartar, JTextField email, JDateChooser birth, JRadioButton nam, JRadioButton nu, JComboBox city) {
         User user = Models.UserModel.user;
+        String[] listCity = Models.UserModel.listCity;
+        for (int i = 0; i < listCity.length; ++i) {
+            city.addItem(listCity[i]);
+        }
+        
         name.setText(user.getName());
         if (user.getSex()) {
             nam.setSelected(true);
@@ -96,10 +101,7 @@ public class UserController {
         email.setText(user.getEmail());
         city.setSelectedItem(user.getCity());
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String[] listCity = Models.UserModel.listCity;
-        for (int i = 0; i < listCity.length; ++i) {
-            city.addItem(listCity[i]);
-        }
+
         try {
             Date birthDate = df.parse(user.getBirth());
             birth.setDate(birthDate);
@@ -191,11 +193,17 @@ public class UserController {
         String fullName = UserModel.user.getName();
         String[] fullNames = fullName.split(" ");
         lastName.setText(fullNames[fullNames.length-1]);
-        ImageIcon iconAvartar = new ImageIcon(UserModel.user.getImage());
+        ImageIcon iconAvartar;
+        if (UserModel.user.getImage() != null) {
+            iconAvartar = new ImageIcon(UserModel.user.getImage());
+        } else {
+            String imagePath = "src/Image/avartar.png";
+            iconAvartar = new ImageIcon(imagePath);
+        }
         Image imageAvartar = iconAvartar.getImage();
         Image imageFixSize = imageAvartar.getScaledInstance( 22, 22,  java.awt.Image.SCALE_SMOOTH ) ;
         icon.setIcon(new ImageIcon(imageFixSize));
 
     }
-    
+
 }

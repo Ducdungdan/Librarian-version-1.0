@@ -13,6 +13,7 @@ public class Book {
     private Number idBook;
     private String name;
     private String author;
+    private String content;
     private String company;
     private Number year;
     private String type;
@@ -24,6 +25,14 @@ public class Book {
     
     public void setIdBook(Number idBook) {
         this.idBook = idBook;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
     
     public Number getIdBook() {

@@ -5,10 +5,11 @@
  */
 package Views;
 
-import Controllers.BookController;
+import Controllers.*;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,7 +40,6 @@ public class ListBook extends javax.swing.JPanel {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        add = new javax.swing.JMenuItem();
         edit = new javax.swing.JMenuItem();
         delete = new javax.swing.JMenuItem();
         rent = new javax.swing.JMenuItem();
@@ -63,14 +63,7 @@ public class ListBook extends javax.swing.JPanel {
         prev = new javax.swing.JButton();
         pageBook = new javax.swing.JLabel();
         typeSearch = new javax.swing.JComboBox();
-
-        add.setText("Thêm");
-        add.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(add);
+        addBook = new javax.swing.JButton();
 
         edit.setText("Sửa");
         edit.addActionListener(new java.awt.event.ActionListener() {
@@ -81,6 +74,11 @@ public class ListBook extends javax.swing.JPanel {
         jPopupMenu1.add(edit);
 
         delete.setText("Xóa");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(delete);
 
         rent.setText("Thêm vào giỏ hàng");
@@ -92,15 +90,6 @@ public class ListBook extends javax.swing.JPanel {
         jPopupMenu1.add(rent);
 
         listBook.setBackground(new java.awt.Color(233, 235, 238));
-        listBook.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                listBookAncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
 
         name.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         name.setForeground(new java.awt.Color(255, 0, 102));
@@ -129,7 +118,11 @@ public class ListBook extends javax.swing.JPanel {
 
         content.setColumns(20);
         content.setFont(new java.awt.Font("Times New Roman", 0, 13)); // NOI18N
+        content.setLineWrap(true);
         content.setRows(5);
+        content.setWrapStyleWord(true);
+        content.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        content.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         content.setEnabled(false);
         jScrollPane3.setViewportView(content);
 
@@ -222,31 +215,43 @@ public class ListBook extends javax.swing.JPanel {
 
         typeSearch.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "id", "Tên sách", "Tác giả", "Thể loại" }));
 
+        addBook.setText("New");
+        addBook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBookActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout listBookLayout = new javax.swing.GroupLayout(listBook);
         listBook.setLayout(listBookLayout);
         listBookLayout.setHorizontalGroup(
             listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(listBookLayout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(listBookLayout.createSequentialGroup()
+                        .addComponent(addBook)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(typeSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(listBookLayout.createSequentialGroup()
-                        .addComponent(prev, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(next, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(listBookLayout.createSequentialGroup()
+                                .addComponent(prev, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(next, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(listBookLayout.createSequentialGroup()
-                        .addComponent(imageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listBookLayout.createSequentialGroup()
+                        .addComponent(imageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(company, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -264,20 +269,20 @@ public class ListBook extends javax.swing.JPanel {
         listBookLayout.setVerticalGroup(
             listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(listBookLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(19, 19, 19)
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(search)
-                    .addComponent(typeSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(typeSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addBook))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(listBookLayout.createSequentialGroup()
-                        .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(listBookLayout.createSequentialGroup()
                                 .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(imageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(listBookLayout.createSequentialGroup()
                                         .addComponent(author, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -289,16 +294,17 @@ public class ListBook extends javax.swing.JPanel {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(country, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(15, 15, 15)
-                                        .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(imageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane3))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(next, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pageBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(prev))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addContainerGap())
         );
@@ -327,10 +333,6 @@ public class ListBook extends javax.swing.JPanel {
         BookController.searchTableListBooks(tableListBook, pageBook, inputSearch.getText() == null?"":inputSearch.getText(), typeSearch.getSelectedItem().toString());
     }//GEN-LAST:event_searchActionPerformed
 
-    private void listBookAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_listBookAncestorAdded
-        BookController.loadTableListBooks(tableListBook);
-    }//GEN-LAST:event_listBookAncestorAdded
-
     private void tableListBookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableListBookMouseClicked
         DefaultTableModel model = (DefaultTableModel) tableListBook.getModel();
         int selectRow = tableListBook.getSelectedRow();
@@ -343,27 +345,25 @@ public class ListBook extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tableListBookMouseClicked
 
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-//        DefaultTableModel model = (DefaultTableModel) TableBook.getModel();
-//
-//        int selectRow = Home.TableBook.getSelectedRow();
-//        if (selectRow != -1) {
-//            String question = "Bạn muốn mượn đầu sách có id = " + model.getValueAt(selectRow, 0).toString();
-//            if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
-//                if (RentBookData.setRentBookData(UserData.user.getIdUser(), (Number) model.getValueAt(selectRow, 0), (int) ((int) model.getValueAt(selectRow, 8) * (100 - (int) model.getValueAt(selectRow, 9)) / (float) 100))) {
-//                    JOptionPane.showMessageDialog(null, "Mượn thành công đầu sách có idBook = " + model.getValueAt(selectRow, 0), "Thông báo", 2);
-//                    model.setValueAt((int) model.getValueAt(selectRow, 7) - 1, selectRow, 7);
-//                }
-//            }
-//        }
-    }//GEN-LAST:event_addActionPerformed
-
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
-        //new Detail(this, false).setVisible(true);
+        DefaultTableModel model = (DefaultTableModel) tableListBook.getModel();
+        int selectRow = tableListBook.getSelectedRow();
+        if (selectRow != -1) {
+            BookController.viewEditBook((Number) tableListBook.getValueAt(selectRow, 0));
+        }
     }//GEN-LAST:event_editActionPerformed
 
     private void rentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rentActionPerformed
-        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) tableListBook.getModel();
+
+        int selectRow = tableListBook.getSelectedRow();
+        if (selectRow != -1) {
+            
+            String question = "Bạn muốn mượn đầu sách có id = " + model.getValueAt(selectRow, 0).toString();
+            if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
+                RentBookController.rentBook((Number) model.getValueAt(selectRow, 0), tableListBook, selectRow);
+            }
+        }
     }//GEN-LAST:event_rentActionPerformed
 
     private void tableListBookMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableListBookMouseReleased
@@ -374,15 +374,30 @@ public class ListBook extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tableListBookMouseReleased
 
+    private void addBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBookActionPerformed
+        Controllers.BookController.viewNewBook();
+    }//GEN-LAST:event_addBookActionPerformed
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tableListBook.getModel();
+        int selectRow = tableListBook.getSelectedRow();
+        if (selectRow != -1) {
+            String question = "Bạn muốn xóa đầu sách có id = " + model.getValueAt(selectRow, 0).toString();
+            if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
+                BookController.delete((Number) model.getValueAt(selectRow, 0), tableListBook, selectRow);
+            }
+        }
+    }//GEN-LAST:event_deleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem add;
+    public javax.swing.JButton addBook;
     private javax.swing.JLabel author;
     private javax.swing.JLabel company;
     public static javax.swing.JTextArea content;
     private javax.swing.JLabel country;
-    private javax.swing.JMenuItem delete;
-    private javax.swing.JMenuItem edit;
+    public javax.swing.JMenuItem delete;
+    public javax.swing.JMenuItem edit;
     public javax.swing.JLabel imageBook;
     public javax.swing.JTextField inputSearch;
     private javax.swing.JLabel jLabel1;
@@ -392,7 +407,7 @@ public class ListBook extends javax.swing.JPanel {
     public static javax.swing.JPanel listBook;
     public javax.swing.JLabel name;
     private javax.swing.JButton next;
-    private javax.swing.JLabel pageBook;
+    public static javax.swing.JLabel pageBook;
     private javax.swing.JButton prev;
     private javax.swing.JMenuItem rent;
     private javax.swing.JButton search;
