@@ -80,22 +80,6 @@ public class BookController {
         }
     }
     
-    public static void restartTableListBook(JTable listBook, JLabel iconLoad, JLabel page) {
-        start = 0;
-        pageBook = 0;
-        String imagePathLoading = "src/Image/loading.gif";
-        ImageIcon imageLoading = new ImageIcon(imagePathLoading);
-        iconLoad.setIcon(imageLoading);
-        if(loadTableListBooks(listBook)){
-            page.setText(String.valueOf(pageBook));
-        } else {
-            JOptionPane.showMessageDialog(null, "Không thể load data", "Lỗi", 2);
-        }
-        String imagePathLoaded = "src/Image/loaded.png";
-        ImageIcon imageLoaded = new ImageIcon(imagePathLoaded);
-        iconLoad.setIcon(imageLoaded);
-    }
-    
     public static void nextTableListBooks(JTable listBook, JLabel page) {
         if(loadTableListBooks(listBook)) {
             ++pageBook;
@@ -109,7 +93,7 @@ public class BookController {
         if (pageBook > 0) {
             int rowCount = listBook.getRowCount();
             //Remove rows one by one from the end of the table
-            start = start - 20 - rowCount;
+            start = start - 28 - rowCount;
             if (loadTableListBooks(listBook)) {
                 --pageBook;
                 page.setText(String.valueOf(pageBook));
@@ -369,6 +353,50 @@ public class BookController {
                 }
             }
 
+        }
+    }
+
+    public static void viewBook(Number idBook) {
+        ResultSet rs = BookModel.getDataBook(idBook);
+        try {
+            if (rs.next()) {
+                BookModel.book.setIdBook(idBook);
+                BookModel.book.setName(rs.getString("Name"));
+                BookModel.book.setAuthor(rs.getString("Author"));
+                BookModel.book.setContent(rs.getString("Content"));
+                BookModel.book.setCompany(rs.getString("Publishing_company"));
+                BookModel.book.setYear(rs.getInt("Publishing_year"));
+                BookModel.book.setType(rs.getString("Type"));
+                BookModel.book.setCountry(rs.getString("Country"));
+                BookModel.book.setNumber(rs.getInt("Numbers"));
+                BookModel.book.setValue(rs.getInt("Value"));
+                Blob blob = rs.getBlob("Image");
+                if (blob != null) {
+                    BookModel.book.setImage(blob.getBytes(1, (int) blob.length()));
+                } else {
+                    BookModel.book.setImage(null);
+                }
+
+                InformationBook newDialogNewBook = new InformationBook(null, true);
+                InformationBook.addBook.setVisible(false);
+                InformationBook.importFromFileJSON.setVisible(false);
+                InformationBook.updateBook.setVisible(false);
+                
+                newDialogNewBook.bowerImg.setEnabled(false);
+                newDialogNewBook.author.setEnabled(false);
+                newDialogNewBook.content.setEnabled(false);
+                newDialogNewBook.country.setEnabled(false);
+                newDialogNewBook.name.setEnabled(false);
+                newDialogNewBook.number.setEnabled(false);
+                newDialogNewBook.type.setEnabled(false);
+                newDialogNewBook.value.setEnabled(false);
+                newDialogNewBook.year.setEnabled(false);
+                newDialogNewBook.company.setEnabled(false);
+
+                newDialogNewBook.setVisible(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

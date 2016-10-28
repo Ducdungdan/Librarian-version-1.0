@@ -426,13 +426,13 @@ public class InformationBook extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton addBook;
-    private javax.swing.JTextField author;
-    public static javax.swing.JButton bowerImg;
+    public javax.swing.JTextField author;
+    public javax.swing.JButton bowerImg;
     private javax.swing.JButton close;
-    public static javax.swing.JButton closeImg;
-    private javax.swing.JTextField company;
-    public static javax.swing.JTextArea content;
-    private javax.swing.JTextField country;
+    public javax.swing.JButton closeImg;
+    public javax.swing.JTextField company;
+    public javax.swing.JTextArea content;
+    public javax.swing.JTextField country;
     public javax.swing.JLabel imageBook;
     public static javax.swing.JButton importFromFileJSON;
     private javax.swing.JLabel jLabel2;
@@ -445,11 +445,11 @@ public class InformationBook extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     public javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField name;
-    private javax.swing.JTextField number;
-    private javax.swing.JTextField type;
+    public javax.swing.JTextField name;
+    public javax.swing.JTextField number;
+    public javax.swing.JTextField type;
     public static javax.swing.JButton updateBook;
-    private javax.swing.JTextField value;
-    private javax.swing.JTextField year;
+    public javax.swing.JTextField value;
+    public javax.swing.JTextField year;
     // End of variables declaration//GEN-END:variables
 }

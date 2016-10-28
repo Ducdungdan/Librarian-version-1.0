@@ -120,7 +120,7 @@ public class BookModel implements DataInterface {
         
         
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT idBook, Name, Author, Type, Value, Numbers FROM datalibrary.book WHERE " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",20");
+            ps = SQLService.getConnect().prepareStatement("SELECT idBook, Name, Author, Type, Value, Numbers FROM datalibrary.book WHERE " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",28");
             rs = ps.executeQuery();
             return rs;
         } catch (Exception e) {

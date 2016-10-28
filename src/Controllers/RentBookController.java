@@ -109,11 +109,7 @@ public class RentBookController {
     public static void rentBook() {
         String question = "Bạn muốn thanh toán hóa đơn trong giỏ hàng!";
         if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
-            if (RentBookModel.setRentBook()) {
-                JOptionPane.showMessageDialog(null, "Thuê sách thành công \n Vào trang cá nhân để kiểm tra", "Thông báo", 2);
-            } else {
-                JOptionPane.showMessageDialog(null, "Thuê sách thất bại \n Vui lòng thử lại", "Thông báo", 2);
-            }
+            RentBookModel.setRentBook();
         }
     }
 }

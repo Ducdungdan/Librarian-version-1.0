@@ -9,10 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import Object.*;
+import java.awt.HeadlessException;
 
 /**
  *
@@ -31,16 +30,21 @@ public class RentBookModel implements DataInterface{
             RentBook rentb;
             if(rs.next()) {
                 for(int i = 0; i < rentBook.size(); ++i) {
+                    rentb = rentBook.get(i);
+
                     try {
-                        rentb = rentBook.get(i);
                         ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.infor_rent (idRent, idBook, day_borrow, rental) VALUES (?, ?, NOW(), ?)");
                         ps.setInt(1, rs.getInt("LAST_INSERT_ID()"));
                         ps.setInt(2, (int) rentb.getIdBook());
                         ps.setInt(3, (int) rentb.getRental());
-                        ps.execute();
+                        if(!ps.execute()) {
+                            JOptionPane.showMessageDialog(null, "Mượn sách có id = " + rentb.getIdBook() + " thành công \n Vào trang cá nhân để kiểm tra", "Thông báo", 2);
+                        }
                         
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    } catch (SQLException | HeadlessException e) {
+                        if("EROOR number = 0".equals(e.getMessage())) {
+                            JOptionPane.showMessageDialog(null, "Mượn sách có id = " + rentb.getIdBook() + " thất bại \n Số lượng sách đã hết", "Thông báo", 2);
+                        }
                     }
                 }
                 rentBook.clear();
@@ -78,6 +82,32 @@ public class RentBookModel implements DataInterface{
         }
     }
     
+    public static ResultSet getRentBooks(Number start, String search, String typeSearch, String show) {
+        String filter;
+        if("all".equals(show)) {
+            filter = "";
+        } else {
+            if("rented".equals(show)) {
+                filter = "AND NOT (infor_rent.day_return IS NULL) ";
+            } else {
+                if("renting".equals(show)) {
+                    filter = "AND date_add(infor_rent.day_borrow, INTERVAL 60 DAY) > now() AND infor_rent.day_return IS NULL ";
+                } else {
+                    filter = "AND date_add(infor_rent.day_borrow, INTERVAL 60 DAY) < now() AND infor_rent.day_return IS NULL ";
+                }
+            }
+        }
+        
+        
+        try {
+            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, infor_rent.idBook, book.Name, user.idUser, authentication.Email, user.Name, infor_rent.day_borrow, infor_rent.day_return, infor_rent.rental FROM datalibrary.infor_rent, datalibrary.rent, datalibrary.authentication, datalibrary.user, datalibrary.book WHERE rent.idRent = infor_rent.idRent AND rent.idUser = user.idUser AND user.idUser = authentication.idUser AND infor_rent.idBook = book.idBook " + filter + "AND " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",28 ");
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
+            return null;
+        }
+    }
+    
     public static Boolean getRentBook(Number idBook, Number idRent) {
         try {
             ps = SQLService.getConnect().prepareStatement("SELECT Image, Name, Author, Publishing_company, Publishing_year, Type, Country, rental  FROM datalibrary.infor_rent, datalibrary.book WHERE infor_rent.idBook = book.idBook AND book.idBook = ? AND idRent = ?");
@@ -87,6 +117,18 @@ public class RentBookModel implements DataInterface{
             return true;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
+            return false;
+        }
+    }
+    
+    public static Boolean setReturnBook(Number idRent, Number idBook) {
+        try {
+            ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.infor_rent SET day_return=NOW() WHERE idRent=? AND idBook=?");
+            ps.setInt(1, (int) idRent);
+            ps.setInt(2, (int) idBook);
+            return !ps.execute();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n tạm thời không trả sách được", "Lỗi", 2);
             return false;
         }
     }

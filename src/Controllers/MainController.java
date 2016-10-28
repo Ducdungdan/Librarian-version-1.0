@@ -9,7 +9,6 @@ import Models.UserModel;
 import Object.User;
 import Views.*;
 import static Views.ListBook.pageBook;
-import static Views.ListBook.tableListBook;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -63,6 +62,23 @@ public class MainController {
         jpanel.updateUI();
     }
     
+    public static void payment(JPanel jpanel) {
+        Payment payment = new Payment();
+        jpanel.removeAll();
+        GridLayout girdlayout = new GridLayout();
+        jpanel.setLayout(girdlayout);
+        jpanel.add(payment.payment);
+        jpanel.updateUI();
+        PaymentController.pageRent = 0;
+        PaymentController.search = "";
+        PaymentController.show = "all";
+        PaymentController.start = 0;
+        PaymentController.typeSearch = "rent.idRent";
+        if(PaymentController.loadTableListRentBook(payment.informationRent)) {
+            Payment.page.setText("0");
+        }
+    }
+    
     public static void listBook(JPanel jpanel) {
         ListBook listBook = new ListBook();
         jpanel.removeAll();
@@ -79,7 +95,7 @@ public class MainController {
         BookController.start = 0;
         BookController.search = "";
         BookController.typeSearch = "idBook";
-        BookController.loadTableListBooks(tableListBook);
+        BookController.loadTableListBooks(listBook.tableListBook);
         pageBook.setText("0");
     }
     

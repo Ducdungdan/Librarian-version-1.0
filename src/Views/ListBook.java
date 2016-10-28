@@ -158,11 +158,11 @@ public class ListBook extends javax.swing.JPanel {
         tableListBook.setGridColor(new java.awt.Color(233, 235, 238));
         tableListBook.getTableHeader().setReorderingAllowed(false);
         tableListBook.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tableListBookMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableListBookMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableListBookMouseReleased(evt);
             }
         });
         jScrollPane1.setViewportView(tableListBook);
@@ -411,7 +411,7 @@ public class ListBook extends javax.swing.JPanel {
     private javax.swing.JButton prev;
     private javax.swing.JMenuItem rent;
     private javax.swing.JButton search;
-    public static javax.swing.JTable tableListBook;
+    public javax.swing.JTable tableListBook;
     private javax.swing.JLabel type;
     public javax.swing.JComboBox typeSearch;
     private javax.swing.JLabel value;
