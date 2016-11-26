@@ -25,6 +25,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Duc Dung Dan
  */
 public class RentBookController {
+    public static String search = "";
+    public static String typeSearch = "rent.idRent";
     
     public static void tableRentBook(JTable jtable) throws SQLException, ParseException {
         if(RentBookModel.getRentBooks()) {
@@ -111,5 +113,62 @@ public class RentBookController {
         if (JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
             RentBookModel.setRentBook();
         }
+    }
+    
+    public static void viewRents(JTable tableRents) {
+        ResultSet rs = Models.RentBookModel.getCheckOuts(search, typeSearch);
+        DefaultTableModel model = (DefaultTableModel) tableRents.getModel();
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            model.removeRow(i);
+        }
+        try {
+            while (rs.next()) {
+                model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("idUser"), rs.getString("Email"), rs.getString("Name"), rs.getString("day_borrow")});
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void viewInforRents(Number idRent, JTable tableRent) {
+        ResultSet rs = Models.RentBookModel.getInforCheckOuts(idRent);
+        DefaultTableModel model = (DefaultTableModel) tableRent.getModel();
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            model.removeRow(i);
+        }
+        try {
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+            while (rs.next()) {
+                Date dayReturn = ft.parse(MainController.addDays(rs.getDate("day_borrow"), 60));
+                model.addRow(new Object[]{rs.getInt("idBook"), rs.getString("Name"), rs.getString("day_borrow"), ft.format(dayReturn),rs.getString("day_return") == null?"Chưa trả sách":rs.getString("day_return"), rs.getInt("rental")});
+            }
+        } catch (SQLException | ParseException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void searchTableCheckouts(JTable tableCheckouts, String inputSearch, String inputTypeSearch) {
+        switch (inputTypeSearch) {
+            case "Mã phiếu mượn":
+                typeSearch = "rent.idRent";
+                break;
+            case "Mã người dùng":
+                typeSearch = "rent.idUser";
+                break;
+            case "Email":
+                typeSearch = "Email";
+                break;
+            case "Tên":
+                typeSearch = "Name";
+                break;
+            default:
+                typeSearch = "day_borrow";
+        }
+        search = inputSearch;
+        viewRents(tableCheckouts);
     }
 }

@@ -83,7 +83,6 @@ public class Information extends javax.swing.JPanel {
         yearBook = new javax.swing.JLabel();
         countryBook = new javax.swing.JLabel();
         moneyBook = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         nam = new javax.swing.JRadioButton();
         nu = new javax.swing.JRadioButton();
         city = new javax.swing.JComboBox();
@@ -280,9 +279,6 @@ public class Information extends javax.swing.JPanel {
         moneyBook.setForeground(new java.awt.Color(51, 255, 51));
         moneyBook.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 2, 12)); // NOI18N
-        jLabel1.setText("Library online CONVENIENT © 2016");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -300,10 +296,6 @@ public class Information extends javax.swing.JPanel {
                     .addComponent(moneyBook, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(nameBook, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(73, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,8 +319,7 @@ public class Information extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(imageBook, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                .addComponent(jLabel1))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         sex.add(nam);
@@ -563,7 +554,6 @@ public class Information extends javax.swing.JPanel {
     private javax.swing.JTextField email;
     private javax.swing.JLabel imageBook;
     public static javax.swing.JPanel information;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

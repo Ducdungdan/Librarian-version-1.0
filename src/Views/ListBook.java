@@ -6,9 +6,11 @@
 package Views;
 
 import Controllers.*;
+import java.io.FileWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -54,7 +56,6 @@ public class ListBook extends javax.swing.JPanel {
         value = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         content = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableListBook = new javax.swing.JTable();
         inputSearch = new javax.swing.JTextField();
@@ -64,6 +65,7 @@ public class ListBook extends javax.swing.JPanel {
         pageBook = new javax.swing.JLabel();
         typeSearch = new javax.swing.JComboBox();
         addBook = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         edit.setText("Sửa");
         edit.addActionListener(new java.awt.event.ActionListener() {
@@ -125,9 +127,6 @@ public class ListBook extends javax.swing.JPanel {
         content.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         content.setEnabled(false);
         jScrollPane3.setViewportView(content);
-
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 2, 12)); // NOI18N
-        jLabel1.setText("Library online CONVENIENT © 2016");
 
         jScrollPane1.setBackground(new java.awt.Color(233, 235, 238));
 
@@ -222,6 +221,13 @@ public class ListBook extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setText("Xuất file PDF");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout listBookLayout = new javax.swing.GroupLayout(listBook);
         listBook.setLayout(listBookLayout);
         listBookLayout.setHorizontalGroup(
@@ -231,6 +237,8 @@ public class ListBook extends javax.swing.JPanel {
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(listBookLayout.createSequentialGroup()
                         .addComponent(addBook)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(typeSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -260,10 +268,7 @@ public class ListBook extends javax.swing.JPanel {
                             .addComponent(country, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(value, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(author, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listBookLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
                 .addGap(24, 24, 24))
         );
         listBookLayout.setVerticalGroup(
@@ -274,7 +279,8 @@ public class ListBook extends javax.swing.JPanel {
                     .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(search)
                     .addComponent(typeSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addBook))
+                    .addComponent(addBook)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(listBookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(listBookLayout.createSequentialGroup()
@@ -304,9 +310,7 @@ public class ListBook extends javax.swing.JPanel {
                             .addComponent(next, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pageBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(prev))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -317,7 +321,9 @@ public class ListBook extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(listBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(listBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -389,6 +395,12 @@ public class ListBook extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showSaveDialog(this);
+        MainController.exportPDF(fc.getSelectedFile().toString(), "CÁC DANH MỤC SÁCH", tableListBook);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton addBook;
@@ -400,7 +412,7 @@ public class ListBook extends javax.swing.JPanel {
     public javax.swing.JMenuItem edit;
     public javax.swing.JLabel imageBook;
     public javax.swing.JTextField inputSearch;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu jPopupMenu1;
     public javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;

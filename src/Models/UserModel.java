@@ -133,22 +133,33 @@ public class UserModel implements DataInterface {
         return !ps.execute();
     }
         
-    public static Boolean getUserData(Number start, String search, String typeSearch) {
+    public static ResultSet getUserData(String search, String typeSearch) {
 
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT user.idUser, Name, Email, Sex, Admin, Block, Adress FROM authentication, user WHERE (user.idUser = authentication.idUser) AND (" + typeSearch + " LIKE \"%" + search + "%\") LIMIT " + start +",7");
-            rs = ps.executeQuery();
-            return true;
+            if("Sex".equals(typeSearch)) {
+                if("nam".equals(search.toLowerCase())) {
+                    search = "1";
+                } else {
+                    if ("nữ".equals(search.toLowerCase())) {
+                        search = "0";
+                    } else {
+                        search = "";
+                    }
+                }
+                
+            }
+            ps = SQLService.getConnect().prepareStatement("SELECT user.idUser, Name, Email, City, Sex, Admin, Block, Adress FROM authentication, user WHERE (user.idUser = authentication.idUser) AND (" + typeSearch + " LIKE \"%" + search + "%\")");
+            return ps.executeQuery();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Không lấy được dữ liệu \n Vui lòng thử lại sau 5 phút", "Lỗi", 2);
-            return false;
+            return null;
         }
     }
         
-    public static Boolean blockUser(Number idUser, String status) {
+    public static Boolean statusUser(Number idUser, String status) {
         try {
             ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.user SET Block=? WHERE idUser=?");
-            ps.setInt(1, ("Bị khóa".equals(status)? 0 : 1));
+            ps.setInt(1, ("Bị khóa".equals(status)? 1 : 0));
             ps.setString(2, idUser.toString());
             if (ps.execute()) {
                 JOptionPane.showMessageDialog(null, "User này không tồn tại", "Lỗi", 2);

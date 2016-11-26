@@ -60,7 +60,8 @@ public class RentBookModel implements DataInterface{
     @Override
     public ResultSet getStatisticalData(String statisticalName) {
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT " + statisticalName + ", COUNT(*) FROM datalibrary.rentbook GROUP BY " + statisticalName);
+            ps = SQLService.getConnect().prepareStatement("SELECT " + statisticalName + ", COUNT(*) FROM datalibrary.infor_rent GROUP BY " + statisticalName + ("Day_return".equals(statisticalName)?" HAVING NOT(Day_return IS NULL)":""));
+            System.out.println(ps);
             rs = ps.executeQuery();
             return rs;
         } catch (Exception e) {
@@ -79,6 +80,27 @@ public class RentBookModel implements DataInterface{
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
             return false;
+        }
+    }
+    
+    public static ResultSet getCheckOuts(String search, String typeSearch) {
+        try {
+            ps = SQLService.getConnect().prepareStatement("SELECT DISTINCT rent.idRent, rent.idUser, Name, Email, day_borrow FROM rent, user, authentication, infor_rent WHERE rent.idUser = user.idUser AND rent.idUser = authentication.idUser AND rent.idRent = infor_rent.idRent AND (" + typeSearch + " LIKE \"%" + search + "%\")");
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
+            return null;
+        }
+    }
+    
+    public static ResultSet getInforCheckOuts(Number idRent) {
+        try {
+            ps = SQLService.getConnect().prepareStatement("SELECT infor_rent.idBook, Name, day_borrow, day_return, rental FROM infor_rent, book WHERE infor_rent.idBook = book.idBook AND infor_rent.idRent = ?");
+            ps.setInt(1, (int) idRent);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
+            return null;
         }
     }
     

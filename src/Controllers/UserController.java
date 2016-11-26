@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,15 +34,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Duc Dung Dan
  */
 public class UserController {
-    
+    public static String search = "";
+    public static String typeSearch = "user.idUser";
     public static byte[] avartarOld;
 
     
@@ -117,6 +121,47 @@ public class UserController {
             ImageIcon icon = new ImageIcon(imagePath);
             avartar.setIcon(icon);
         }
+    }
+    
+    public static void viewUsers(JTable tableUsers) {
+        ResultSet rs = Models.UserModel.getUserData(search, typeSearch);
+        DefaultTableModel model = (DefaultTableModel) tableUsers.getModel();
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            model.removeRow(i);
+        }
+        try {
+            while(rs.next()) {
+                model.addRow(new Object[]{rs.getInt("idUser"), rs.getString("Email"), rs.getString("Name"), rs.getBoolean("Sex")?"Nam":"Nữ", rs.getBoolean("Block")?"Bị khóa":"Đang sử dụng", rs.getString("Adress"), rs.getString("City"), rs.getBoolean("Admin")?"Admin":"Người dùng"});
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void searchTableUsers(JTable tableUsers, String inputSearch, String inputTypeSearch) {
+        switch (inputTypeSearch) {
+            case "Id":
+                typeSearch = "user.idUser";
+                break;
+            case "Email":
+                typeSearch = "Email";
+                break;
+            case "Tên":
+                typeSearch = "Name";
+                break;
+            case "Địa chỉ":
+                typeSearch = "Adress";
+                break;
+            case "Thành phố":
+                typeSearch = "City";
+                break;
+            default:
+                typeSearch = "Sex";
+        }
+        search = inputSearch;
+        viewUsers(tableUsers);
     }
     
     public static void bowserAvartar(JLabel avartar, JButton bower, JButton save, JButton close, Component infor) throws IOException {
@@ -204,6 +249,19 @@ public class UserController {
         Image imageFixSize = imageAvartar.getScaledInstance( 22, 22,  java.awt.Image.SCALE_SMOOTH ) ;
         icon.setIcon(new ImageIcon(imageFixSize));
 
+    }
+
+    public static void unblock(Integer idUser, JTable table) {
+        if (UserModel.statusUser(idUser, "Bị khóa")) {
+            viewUsers(table);
+        }
+    }
+
+    public static void block(Integer idUser, JTable table) {
+        if(UserModel.statusUser(idUser, "Đang sử dụng")) {
+            viewUsers(table);
+        }
+        
     }
 
 }
