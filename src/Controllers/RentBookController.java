@@ -44,14 +44,15 @@ public class RentBookController {
                 if(rs.getDate("day_return") != null) {
                     status = "Đã trả";
                 } else {
-                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                     Date dateNow = new Date();
-                    Date dayReturn = ft.parse(MainController.addDays(rs.getDate("day_borrow"), 60));
-                    if(dateNow.compareTo(dayReturn) >= 0) {
-                        status = "Quá " + MainController.subDays(dateNow, dayReturn) + " ngày";
+                    if (dateNow.compareTo(rs.getDate("expected_day_return")) < 0) {
+                        int d = MainController.subDays(rs.getDate("expected_day_return"), dateNow);
+                        status = "Còn " + d + " ngày";
                     } else {
-                        status = "Còn " + MainController.subDays(dayReturn, dateNow) + " ngày";
+                        int d = MainController.subDays(dateNow, rs.getDate("expected_day_return"));
+                        status = "Quá " + d + " ngày";
                     }
+                    
                 }
                 model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("idBook"), rs.getString("Name"), rs.getString("day_borrow"), rs.getString("day_return"), status});
             }

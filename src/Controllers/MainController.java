@@ -86,6 +86,15 @@ public class MainController {
         jpanel.updateUI();
     }
     
+    public static void home(JPanel jpanel) {
+        Home home = new Home();
+        jpanel.removeAll();
+        GridLayout girdlayout = new GridLayout();
+        jpanel.setLayout(girdlayout);
+        jpanel.add(home.home);
+        jpanel.updateUI();
+    }
+    
     public static void payment(JPanel jpanel) {
         Payment payment = new Payment();
         jpanel.removeAll();

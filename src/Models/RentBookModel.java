@@ -33,7 +33,7 @@ public class RentBookModel implements DataInterface{
                     rentb = rentBook.get(i);
 
                     try {
-                        ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.infor_rent (idRent, idBook, day_borrow, rental) VALUES (?, ?, NOW(), ?)");
+                        ps = SQLService.getConnect().prepareStatement("INSERT INTO datalibrary.infor_rent (idRent, idBook, day_borrow, rental, expected_day_return) VALUES (?, ?, NOW(), ?, DATE_ADD(NOW(), INTERVAL 60 DAY))");
                         ps.setInt(1, rs.getInt("LAST_INSERT_ID()"));
                         ps.setInt(2, (int) rentb.getIdBook());
                         ps.setInt(3, (int) rentb.getRental());
@@ -64,7 +64,7 @@ public class RentBookModel implements DataInterface{
             System.out.println(ps);
             rs = ps.executeQuery();
             return rs;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi", "Lỗi", 2);
             return null;
         }
@@ -73,7 +73,7 @@ public class RentBookModel implements DataInterface{
     
     public static Boolean getRentBooks() {
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, book.idBook, Name, day_borrow, day_return FROM datalibrary.rent, datalibrary.book, datalibrary.infor_rent WHERE infor_rent.idBook = book.idBook AND rent.idRent = infor_rent.idRent AND idUser = ?");
+            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, expected_day_return, book.idBook, Name, day_borrow, day_return FROM datalibrary.rent, datalibrary.book, datalibrary.infor_rent WHERE infor_rent.idBook = book.idBook AND rent.idRent = infor_rent.idRent AND idUser = ?");
             ps.setInt(1, (int) UserModel.user.getIdUser());
             rs = ps.executeQuery();
             return true;
@@ -113,16 +113,16 @@ public class RentBookModel implements DataInterface{
                 filter = "AND NOT (infor_rent.day_return IS NULL) ";
             } else {
                 if("renting".equals(show)) {
-                    filter = "AND date_add(infor_rent.day_borrow, INTERVAL 60 DAY) > now() AND infor_rent.day_return IS NULL ";
+                    filter = "AND NOT (expected_day_return < now()) AND infor_rent.day_return IS NULL ";
                 } else {
-                    filter = "AND date_add(infor_rent.day_borrow, INTERVAL 60 DAY) < now() AND infor_rent.day_return IS NULL ";
+                    filter = "AND expected_day_return < now() AND infor_rent.day_return IS NULL ";
                 }
             }
         }
         
         
         try {
-            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, infor_rent.idBook, book.Name, user.idUser, authentication.Email, user.Name, infor_rent.day_borrow, infor_rent.day_return, infor_rent.rental FROM datalibrary.infor_rent, datalibrary.rent, datalibrary.authentication, datalibrary.user, datalibrary.book WHERE rent.idRent = infor_rent.idRent AND rent.idUser = user.idUser AND user.idUser = authentication.idUser AND infor_rent.idBook = book.idBook " + filter + "AND " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",28 ");
+            ps = SQLService.getConnect().prepareStatement("SELECT rent.idRent, expected_day_return, fine, infor_rent.idBook, book.Name, user.idUser, authentication.Email, user.Name, infor_rent.day_borrow, infor_rent.day_return, infor_rent.rental FROM datalibrary.infor_rent, datalibrary.rent, datalibrary.authentication, datalibrary.user, datalibrary.book WHERE rent.idRent = infor_rent.idRent AND rent.idUser = user.idUser AND user.idUser = authentication.idUser AND infor_rent.idBook = book.idBook " + filter + "AND " + typeSearch + " LIKE \"%"+ search +"%\" LIMIT " + start + ",28 ");
             return ps.executeQuery();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
@@ -137,19 +137,20 @@ public class RentBookModel implements DataInterface{
             ps.setInt(2, (int) idRent);
             rs = ps.executeQuery();
             return true;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n không lấy dữ liệu thuê sách được", "Lỗi", 2);
             return false;
         }
     }
     
-    public static Boolean setReturnBook(Number idRent, Number idBook) {
+    public static Boolean setReturnBook(Number idRent, Number idBook, Number fine) {
         try {
-            ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.infor_rent SET day_return=NOW() WHERE idRent=? AND idBook=?");
-            ps.setInt(1, (int) idRent);
-            ps.setInt(2, (int) idBook);
+            ps = SQLService.getConnect().prepareStatement("UPDATE datalibrary.infor_rent SET day_return=NOW(), fine = ? WHERE idRent=? AND idBook=?");
+            ps.setInt(1, (int) fine);
+            ps.setInt(2, (int) idRent);
+            ps.setInt(3, (int) idBook);
             return !ps.execute();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang bị lỗi \n tạm thời không trả sách được", "Lỗi", 2);
             return false;
         }

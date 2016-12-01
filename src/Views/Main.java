@@ -35,7 +35,7 @@ public class Main extends javax.swing.JFrame {
         icon = new javax.swing.JLabel();
         lastName = new javax.swing.JLabel();
         coupon = new javax.swing.JButton();
-        home = new javax.swing.JButton();
+        listOrder = new javax.swing.JButton();
         book = new javax.swing.JButton();
         exit = new javax.swing.JButton();
         statistical = new javax.swing.JButton();
@@ -47,6 +47,7 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         aa.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(0, 51, 255), null));
         aa.addAncestorListener(new javax.swing.event.AncestorListener() {
@@ -116,19 +117,19 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/order-16.png"))); // NOI18N
-        home.setBorder(null);
-        home.setBorderPainted(false);
-        home.setContentAreaFilled(false);
-        home.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        home.addMouseListener(new java.awt.event.MouseAdapter() {
+        listOrder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/order-16.png"))); // NOI18N
+        listOrder.setBorder(null);
+        listOrder.setBorderPainted(false);
+        listOrder.setContentAreaFilled(false);
+        listOrder.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        listOrder.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                homeMouseClicked(evt);
+                listOrderMouseClicked(evt);
             }
         });
-        home.addActionListener(new java.awt.event.ActionListener() {
+        listOrder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                homeActionPerformed(evt);
+                listOrderActionPerformed(evt);
             }
         });
 
@@ -219,7 +220,7 @@ public class Main extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(home1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(home, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(listOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -245,7 +246,7 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(logo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(inputSearchNameUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(coupon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(home, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(listOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(book, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(exit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statistical, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -328,16 +329,22 @@ public class Main extends javax.swing.JFrame {
         Controllers.MainController.logOut(this);
     }//GEN-LAST:event_exitActionPerformed
 
-    private void homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeActionPerformed
+    private void listOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listOrderActionPerformed
 
-    }//GEN-LAST:event_homeActionPerformed
+    }//GEN-LAST:event_listOrderActionPerformed
 
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
         Controllers.MainController.information(main);
     }//GEN-LAST:event_jPanel3MouseClicked
 
     private void aaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_aaAncestorAdded
+        Controllers.MainController.home(main);
         Controllers.UserController.showNavItem(lastName, icon);
+        if(Models.UserModel.user.getAdmin() == false) {
+            listOrder.setVisible(false);
+            user.setVisible(false);
+            statistical.setVisible(false);
+        }
     }//GEN-LAST:event_aaAncestorAdded
 
     private void bookMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookMouseClicked
@@ -365,12 +372,12 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_userMouseClicked
 
     private void home1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_home1ActionPerformed
-        // TODO add your handling code here:
+        Controllers.MainController.home(main);
     }//GEN-LAST:event_home1ActionPerformed
 
-    private void homeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeMouseClicked
+    private void listOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listOrderMouseClicked
         Controllers.MainController.checkouts(main);
-    }//GEN-LAST:event_homeMouseClicked
+    }//GEN-LAST:event_listOrderMouseClicked
 
     /**
      * @param args the command line arguments
@@ -409,7 +416,6 @@ public class Main extends javax.swing.JFrame {
     public static javax.swing.JButton book;
     public static javax.swing.JButton coupon;
     public static javax.swing.JButton exit;
-    public static javax.swing.JButton home;
     public static javax.swing.JButton home1;
     public static javax.swing.JLabel icon;
     public static javax.swing.JTextField inputSearchNameUser;
@@ -418,6 +424,7 @@ public class Main extends javax.swing.JFrame {
     public static javax.swing.JPanel jPanel2;
     public static javax.swing.JPanel jPanel3;
     public static javax.swing.JLabel lastName;
+    public static javax.swing.JButton listOrder;
     public static javax.swing.JLabel logo;
     public static javax.swing.JPanel main;
     public static javax.swing.JButton rent;

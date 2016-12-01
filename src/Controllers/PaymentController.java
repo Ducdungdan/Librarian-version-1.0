@@ -10,6 +10,9 @@ import javax.swing.JTable;
 import Models.RentBookModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,7 +39,21 @@ public class PaymentController {
                 }
 
                 do {
-                    model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("idBook"), rs.getString("book.Name"), rs.getInt("idUser"), rs.getString("Email"), rs.getString("user.Name"), rs.getString("day_borrow"), rs.getString("day_return"), rs.getString("rental")});
+                    int fine = 0;
+                    if(rs.getInt("fine") == 0) {
+                        DateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                        Date dateNow = new Date();
+
+                        if(dateNow.compareTo(rs.getDate("expected_day_return")) > 0) {
+                            int d = MainController.subDays(dateNow, rs.getDate("expected_day_return"));
+                            fine = d*rs.getInt("rental")/10;
+                        }
+                    } else {
+                        fine = rs.getInt("fine");
+                    }
+                    
+                    
+                    model.addRow(new Object[]{rs.getInt("idRent"), rs.getInt("idBook"), rs.getString("book.Name"), rs.getInt("idUser"), rs.getString("Email"), rs.getString("user.Name"), rs.getString("day_borrow"), rs.getString("expected_day_return"), rs.getString("day_return"), rs.getString("rental"), fine});
                     ++start;
                 } while (rs.next());
                 return true;
@@ -119,8 +136,8 @@ public class PaymentController {
         }
     }
     
-    public static void returnBook(Number idRent, Number idBook) {
-        if(RentBookModel.setReturnBook(idRent, idBook)) {
+    public static void returnBook(Number idRent, Number idBook, Number fine) {
+        if(RentBookModel.setReturnBook(idRent, idBook, fine)) {
             JOptionPane.showMessageDialog(null, "Trả sách thành công", "Thông báo", 2);
         } else {
             JOptionPane.showMessageDialog(null, "Trả sách thất bại", "Thông báo", 2);

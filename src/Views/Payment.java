@@ -133,14 +133,14 @@ public class Payment extends javax.swing.JPanel {
 
             },
             new String [] {
-                "idRent", "idBook", "Tên sách", "idUser", "Email", "Tên người dùng", "Ngày mươn", "Ngày trả", "Tiền mượn"
+                "idRent", "idBook", "Tên sách", "idUser", "Email", "Tên người dùng", "Ngày mươn", "Ngày dự kiến trả", "Ngày trả", "Tiền mượn", "Tiền phạt"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -165,23 +165,27 @@ public class Payment extends javax.swing.JPanel {
         jScrollPane1.setViewportView(informationRent);
         if (informationRent.getColumnModel().getColumnCount() > 0) {
             informationRent.getColumnModel().getColumn(0).setResizable(false);
-            informationRent.getColumnModel().getColumn(0).setPreferredWidth(65);
+            informationRent.getColumnModel().getColumn(0).setPreferredWidth(60);
             informationRent.getColumnModel().getColumn(1).setResizable(false);
-            informationRent.getColumnModel().getColumn(1).setPreferredWidth(65);
+            informationRent.getColumnModel().getColumn(1).setPreferredWidth(60);
             informationRent.getColumnModel().getColumn(2).setResizable(false);
-            informationRent.getColumnModel().getColumn(2).setPreferredWidth(205);
+            informationRent.getColumnModel().getColumn(2).setPreferredWidth(150);
             informationRent.getColumnModel().getColumn(3).setResizable(false);
-            informationRent.getColumnModel().getColumn(3).setPreferredWidth(65);
+            informationRent.getColumnModel().getColumn(3).setPreferredWidth(60);
             informationRent.getColumnModel().getColumn(4).setResizable(false);
-            informationRent.getColumnModel().getColumn(4).setPreferredWidth(140);
+            informationRent.getColumnModel().getColumn(4).setPreferredWidth(120);
             informationRent.getColumnModel().getColumn(5).setResizable(false);
-            informationRent.getColumnModel().getColumn(5).setPreferredWidth(140);
+            informationRent.getColumnModel().getColumn(5).setPreferredWidth(90);
             informationRent.getColumnModel().getColumn(6).setResizable(false);
             informationRent.getColumnModel().getColumn(6).setPreferredWidth(90);
             informationRent.getColumnModel().getColumn(7).setResizable(false);
             informationRent.getColumnModel().getColumn(7).setPreferredWidth(90);
             informationRent.getColumnModel().getColumn(8).setResizable(false);
             informationRent.getColumnModel().getColumn(8).setPreferredWidth(90);
+            informationRent.getColumnModel().getColumn(9).setResizable(false);
+            informationRent.getColumnModel().getColumn(9).setPreferredWidth(70);
+            informationRent.getColumnModel().getColumn(10).setResizable(false);
+            informationRent.getColumnModel().getColumn(10).setPreferredWidth(70);
         }
 
         typeSearch.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "idRent", "idBook", "Tên sách", "idUser", "Email", "Tên người dùng", "Ngày mượn", "Ngày trả" }));
@@ -326,14 +330,14 @@ public class Payment extends javax.swing.JPanel {
         int selectRow = informationRent.getSelectedRow();
         String question = "Bạn muốn trả sách có idRent = " + model.getValueAt(selectRow, 0) + ", idBook = " + model.getValueAt(selectRow, 1) + ", idUser = " + model.getValueAt(selectRow, 3);
         if (selectRow != -1 && JOptionPane.showConfirmDialog(null, question, "Thông báo", 2) == 0) {
-            PaymentController.returnBook((int) model.getValueAt(selectRow, 0), (int) model.getValueAt(selectRow, 1));
+            PaymentController.returnBook((int) model.getValueAt(selectRow, 0), (int) model.getValueAt(selectRow, 1), (int) model.getValueAt(selectRow, 10));
         }
     }//GEN-LAST:event_returnBookActionPerformed
 
     private void informationRentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_informationRentMouseClicked
         DefaultTableModel model = (DefaultTableModel) informationRent.getModel();
         int selectRow = informationRent.getSelectedRow();
-        if(selectRow != -1 && model.getValueAt(selectRow, 7) == null) {
+        if(selectRow != -1 && model.getValueAt(selectRow, 8) == null) {
             returnBook.setVisible(true);
         } else {
             returnBook.setVisible(false);
