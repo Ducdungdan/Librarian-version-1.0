@@ -131,7 +131,7 @@ public class BookController {
     public static void viewBook(Number idBook, JLabel name, JLabel author, JTextArea content, JLabel company, JLabel year, JLabel type, JLabel value, JLabel country, JLabel imageBook) throws SQLException {
         ResultSet rs = BookModel.getDataBook(idBook);
         rs.next();
-        name.setText(truncate(rs.getString("Name"), 60));
+        name.setText(truncate(rs.getString("Name"), 40));
         author.setText(truncate("Tác giả: " + rs.getString("Author"), 30));
         content.setText(rs.getString("Content"));
         company.setText(truncate(rs.getString("Publishing_company"), 30));
